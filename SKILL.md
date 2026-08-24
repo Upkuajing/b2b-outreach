@@ -1,7 +1,7 @@
 ---
 name: b2b-outreach
 description: "B2B outreach toolkit: send bulk cold email and global SMS, harvest Google Maps merchants, and validate contact info (phone/WhatsApp, email, domain) before reaching out. Monitor email/SMS delivery status, cleanse CRM contact lists, and run end-to-end cross-border outreach campaigns.\n\nTrigger: bulk cold email, email send, email open rate tracker, business domain emails, mass mail for exporters, global bulk SMS, two-way SMS replies, SMS delivery reports, cross-border SMS marketing, Google maps business scraper, merchant data download, radius-based lead search, distributor sourcing, phone number validation, WhatsApp status check, email address validation, domain validity security check, CRM data cleansing, bulk SMS pre-verification, B2B outreach campaign"
-metadata: {"version":"1.0.0","homepage":"https://www.upkuajing.com","clawdbot":{"emoji":"🚀","requires":{"bins":["python"],"env":["UPKUAJING_API_KEY"]},"primaryEnv":"UPKUAJING_API_KEY"}}
+metadata: {"version":"1.0.1","homepage":"https://www.upkuajing.com","clawdbot":{"emoji":"🚀","requires":{"bins":["python"],"env":["UPKUAJING_API_KEY"]},"primaryEnv":"UPKUAJING_API_KEY"}}
 ---
 
 # B2B Outreach
@@ -162,6 +162,15 @@ When API response indicates insufficient balance:
 
 Newly applied keys must be registered/bound at [UpKuaJing Open Platform](https://developer.upkuajing.com/).
 
+### **Report Skill Call Errors**
+When an API call fails or returns abnormal data (server error, timeout, malformed response, etc.), explain the anomaly to the user in natural language and ask whether to report it to the platform for troubleshooting. Only run the report after user confirmation:
+```bash
+python scripts/error_report.py --params '{"requestPath":"/agent/mail/send","requestId":"f47ac10b58cc4372a5670e02b2c3d479","context":"Email send failed with a server error"}'
+```
+- Do not report normal business conditions (insufficient balance, invalid API key, parameter errors) — handle them via their own flows
+- Error reporting does not incur query fees
+- **Parameters**: See [Error Report API](references/skill-error-report-api.md)
+
 ## Fees
 
 **Send/search/validate calls incur fees**; task list & record list queries are free.
@@ -188,6 +197,7 @@ python scripts/auth.py --price_info
 - **API key invalid/non-existent**: check `UPKUAJING_API_KEY` in `~/.upkuajing/.env`
 - **Insufficient balance**: guide user to top up
 - **Invalid parameters**: **must first check the corresponding API doc in `references/`** - get correct parameter names/formats from documentation, do not guess
+- **Skill call errors / abnormal responses**: Explain to the user and, with user confirmation, report to the platform via `python scripts/error_report.py` (see [Report Skill Call Errors](#report-skill-call-errors))
 
 ### API Documentation Reference
 
@@ -202,6 +212,7 @@ python scripts/auth.py --price_info
 
 **Validation** (prefixed `validity-` to distinguish from email-send docs)
 - [validity-phone](references/validity-phone-api.md) | [validity-email](references/validity-email-api.md) | [validity-domain](references/validity-domain-api.md)
+- Error Report: Check [references/skill-error-report-api.md](references/skill-error-report-api.md)
 
 ## Notes
 
